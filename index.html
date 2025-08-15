@@ -1,88 +1,335 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NEXT-LEVEL Internet Access</title>
-<style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEXT-LEVEL Internet</title>
+  <style>
+    :root {
+      --neon: #00fff0;
+      --neon2: #00ff88;
+      --matrix: #00ff55;
+      --dark: #000000;
+    }
+    * { box-sizing: border-box; }
     body {
-        font-family: Arial, sans-serif;
-        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-        color: white;
-        margin: 0;
-        padding: 0;
-        text-align: center;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--neon);
+      background: var(--dark);
+      overflow-x: hidden;
+      min-height: 100vh;
     }
-    header {
-        padding: 30px;
-        font-size: 2em;
-        font-weight: bold;
-        animation: fadeDown 1s ease-in-out;
-    }
-    .packages {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 20px;
-        padding: 20px;
-    }
-    .package {
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 15px;
-        padding: 20px;
-        width: 200px;
-        cursor: pointer;
-        transition: transform 0.3s, box-shadow 0.3s;
-        opacity: 0;
-        animation: fadeUp 1s forwards;
-    }
-    .package:hover {
-        transform: scale(1.05) translateY(-5px);
-        box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
-    }
-    .package:nth-child(1) { animation-delay: 0.3s; }
-    .package:nth-child(2) { animation-delay: 0.6s; }
-    .package:nth-child(3) { animation-delay: 0.9s; }
-    .package:nth-child(4) { animation-delay: 1.2s; }
-    .package:nth-child(5) { animation-delay: 1.5s; }
 
-    @keyframes fadeDown {
-        from { transform: translateY(-20px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
+    /* MATRIX RAIN BACKGROUND */
+    canvas#matrix {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
     }
-    @keyframes fadeUp {
-        from { transform: translateY(30px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
+
+    /* SIDEWAYS TYPEWRITER TITLE */
+    .title-wrap {
+      position: fixed;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%) rotate(-90deg);
+      transform-origin: left center;
+      white-space: nowrap;
+      z-index: 2;
+      pointer-events: none;
     }
-</style>
+    .title {
+      font-family: 'Courier New', monospace;
+      font-size: clamp(1.6rem, 2.5vw, 2.4rem);
+      letter-spacing: 0.08em;
+      color: var(--neon);
+      text-shadow: 0 0 10px var(--neon), 0 0 20px var(--neon2);
+      border-right: 3px solid var(--neon);
+      overflow: hidden;
+      width: 0ch; /* animated */
+      animation: typing 3.5s steps(22) 0.5s forwards, glitch 2.2s 4.2s 3 alternate;
+    }
+    @keyframes typing { to { width: 22ch; } }
+    @keyframes glitch {
+      0% { text-shadow: 2px 0 #ff2a6d, -2px 0 #27d7ff; }
+      50% { text-shadow: -2px 0 #ff2a6d, 2px 0 #27d7ff; }
+      100% { text-shadow: 0 0 10px var(--neon), 0 0 20px var(--neon2); }
+    }
+
+    header {
+      text-align: center;
+      padding: 28px 16px 8px;
+      margin-left: clamp(0px, 12vw, 240px); /* space for sideways title on large screens */
+    }
+    header h2 {
+      margin: 0;
+      font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+      color: #bfffee;
+      text-shadow: 0 0 8px rgba(0,255,240,0.5);
+    }
+    header p {
+      margin: 6px 0 0;
+      color: #a0ffd9;
+      font-size: 0.95rem;
+    }
+
+    .free-offer {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 6px 12px;
+      border: 1px solid var(--neon2);
+      border-radius: 999px;
+      background: rgba(0,255,136,0.08);
+      color: #caffe7;
+      font-size: 0.9rem;
+      backdrop-filter: blur(4px);
+    }
+
+    /* PACKAGES GRID */
+    .packages {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      max-width: 1100px;
+      margin: 24px auto 40px;
+      padding: 0 16px 24px;
+    }
+    .card {
+      background: rgba(0, 10, 20, 0.55);
+      border: 1px solid rgba(0,255,240,0.35);
+      border-radius: 16px;
+      padding: 18px 16px;
+      box-shadow: 0 0 14px rgba(0,255,240,0.25);
+      backdrop-filter: blur(10px);
+      transform: translateY(40px);
+      opacity: 0;
+      animation: fadeUp 0.9s ease forwards, pulse 3.2s ease-in-out infinite 1.2s;
+    }
+    .card:nth-child(1){ animation-delay: 0.15s; }
+    .card:nth-child(2){ animation-delay: 0.3s; }
+    .card:nth-child(3){ animation-delay: 0.45s; }
+    .card:nth-child(4){ animation-delay: 0.6s; }
+    .card:nth-child(5){ animation-delay: 0.75s; }
+
+    @keyframes fadeUp { to { transform: translateY(0); opacity: 1; } }
+    @keyframes pulse {
+      0%,100% { box-shadow: 0 0 14px rgba(0,255,240,0.25); transform: translateY(0) scale(1); }
+      50% { box-shadow: 0 0 28px rgba(0,255,240,0.6); transform: translateY(-3px) scale(1.02); }
+    }
+
+    .card h3 { margin: 6px 0 0; color: #e0fffb; font-weight: 600; }
+    .price { font-size: 1.6rem; margin: 8px 0 2px; color: var(--neon); text-shadow: 0 0 10px var(--neon); }
+    .note { color: #c7ffe8; font-size: 0.92rem; opacity: 0.9; }
+
+    .actions { margin-top: 14px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      appearance: none; border: 0; cursor: pointer; padding: 10px 14px; border-radius: 999px;
+      color: #001314; font-weight: 700; letter-spacing: 0.02em;
+      background: linear-gradient(90deg, var(--neon), var(--neon2));
+      box-shadow: 0 4px 16px rgba(0,255,240,0.35);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    }
+    .btn:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 8px 22px rgba(0,255,240,0.5); filter: brightness(1.05); }
+    .btn:active { transform: translateY(0); filter: brightness(0.95); }
+    .ghost { background: transparent; color: var(--neon); border: 1px solid var(--neon); }
+
+    /* SIMPLE MODAL */
+    .modal-backdrop {
+      position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.6); z-index: 5; padding: 16px;
+    }
+    .modal {
+      width: min(520px, 92vw);
+      background: rgba(0, 20, 28, 0.9);
+      border: 1px solid rgba(0,255,240,0.35);
+      border-radius: 14px; padding: 16px; color: #d9fffb;
+      box-shadow: 0 0 22px rgba(0,255,240,0.35);
+    }
+    .modal header { text-align: left; margin: 0 0 8px 0; }
+    .modal h4 { margin: 0; color: var(--neon); }
+    .modal .meta { font-size: 0.92rem; color: #bfffee; margin-bottom: 10px; }
+    .modal .row { display: grid; grid-template-columns: 110px 1fr; gap: 10px; margin: 8px 0; align-items: center; }
+    .modal input, .modal select {
+      width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(0,255,240,0.3);
+      background: rgba(0,0,0,0.35); color: #eafffb; outline: none;
+    }
+    .modal .actions { justify-content: flex-end; }
+
+    footer { text-align: center; color: #9dffe9; padding: 14px 16px 26px; font-size: 0.9rem; }
+
+    /* MOBILE TWEAKS */
+    @media (max-width: 820px){
+      .title-wrap{ left: 8px; }
+      header{ margin-left: 0; padding-left: 56px; padding-right: 12px; }
+      .modal .row { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
+  <!-- MATRIX BACKGROUND -->
+  <canvas id="matrix"></canvas>
 
-<header>💠 Welcome to NEXT-LEVEL Internet Access 💠<br>
-<small>Choose Your Ideal Package – Free Internet 2 Times a Week</small></header>
+  <!-- SIDEWAYS BRAND TITLE -->
+  <div class="title-wrap">
+    <div class="title">NEXT-LEVEL INTERNET</div>
+  </div>
 
-<div class="packages">
-    <div class="package">
-        <h2>8 Hours</h2>
-        <p>KSh 20</p>
-    </div>
-    <div class="package">
-        <h2>1 Day</h2>
-        <p>KSh 40</p>
-    </div>
-    <div class="package">
-        <h2>2 Days</h2>
-        <p>KSh 50</p>
-    </div>
-    <div class="package">
-        <h2>1 Month (Single Device)</h2>
-        <p>KSh 400</p>
-    </div>
-    <div class="package">
-        <h2>1 Month (Multiple Devices)</h2>
-        <p>KSh 800</p>
-    </div>
-</div>
+  <!-- MAIN HEADER -->
+  <header>
+    <h2>Choose Your Ideal Package</h2>
+    <p class="free-offer">🎁 We give FREE internet access twice a week!</p>
+  </header>
 
+  <!-- PACKAGES -->
+  <section class="packages">
+    <article class="card" data-plan="8h" data-amount="20" data-label="8 Hours • Single Device">
+      <div class="price">Ksh 20</div>
+      <h3>8 Hours</h3>
+      <p class="note">Single device access</p>
+      <div class="actions">
+        <button class="btn buy">Buy Now</button>
+        <button class="btn ghost details">Details</button>
+      </div>
+    </article>
+
+    <article class="card" data-plan="1d" data-amount="40" data-label="1 Day • Single Device">
+      <div class="price">Ksh 40</div>
+      <h3>1 Day</h3>
+      <p class="note">Single device access</p>
+      <div class="actions">
+        <button class="btn buy">Buy Now</button>
+        <button class="btn ghost details">Details</button>
+      </div>
+    </article>
+
+    <article class="card" data-plan="2d" data-amount="50" data-label="2 Days • Single Device">
+      <div class="price">Ksh 50</div>
+      <h3>2 Days</h3>
+      <p class="note">Single device access</p>
+      <div class="actions">
+        <button class="btn buy">Buy Now</button>
+        <button class="btn ghost details">Details</button>
+      </div>
+    </article>
+
+    <article class="card" data-plan="1m_single" data-amount="400" data-label="1 Month • Single Device">
+      <div class="price">Ksh 400</div>
+      <h3>1 Month</h3>
+      <p class="note">Single device access</p>
+      <div class="actions">
+        <button class="btn buy">Buy Now</button>
+        <button class="btn ghost details">Details</button>
+      </div>
+    </article>
+
+    <article class="card" data-plan="1m_multi" data-amount="800" data-label="1 Month • Multiple Devices">
+      <div class="price">Ksh 800</div>
+      <h3>1 Month Premium</h3>
+      <p class="note">Multiple devices</p>
+      <div class="actions">
+        <button class="btn buy">Buy Now</button>
+        <button class="btn ghost details">Details</button>
+      </div>
+    </article>
+  </section>
+
+  <footer>© 2025 NEXT-LEVEL Technologies. All rights reserved.</footer>
+
+  <div class="modal-backdrop" id="payModal">
+    <div class="modal">
+      <header>
+        <h4 id="modalTitle">Complete Purchase</h4>
+        <div class="meta" id="modalMeta"></div>
+      </header>
+      <div class="row">
+        <label>Phone (M‑Pesa)</label>
+        <input id="mpesaPhone" type="tel" placeholder="07XX XXX XXX" />
+      </div>
+      <div class="row">
+        <label>Device (MAC)</label>
+        <input id="deviceMac" type="text" placeholder="AA:BB:CC:DD:EE:FF" />
+      </div>
+      <div class="row">
+        <label>Notes</label>
+        <input id="notes" type="text" placeholder="Optional" />
+      </div>
+      <div class="actions">
+        <button class="btn ghost" id="cancelPay">Cancel</button>
+        <button class="btn" id="confirmPay">Pay Now</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // MATRIX RAIN
+    const canvas = document.getElementById('matrix');
+    const ctx = canvas.getContext('2d');
+    function sizeCanvas(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    sizeCanvas();
+    window.addEventListener('resize', sizeCanvas);
+
+    const letters = '01';
+    const fontSize = 16;
+    let columns = Math.floor(canvas.width / fontSize);
+    let drops = new Array(columns).fill(1);
+
+    function drawMatrix(){
+      ctx.fillStyle = 'rgba(0,0,0,0.06)';
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--matrix') || '#00ff55';
+      ctx.font = fontSize + 'px monospace';
+      for(let i=0;i<drops.length;i++){
+        const text = letters.charAt(Math.floor(Math.random()*letters.length));
+        ctx.fillText(text, i*fontSize, drops[i]*fontSize);
+        if(drops[i]*fontSize > canvas.height && Math.random()>0.975) drops[i]=0;
+        drops[i]++;
+      }
+    }
+    setInterval(drawMatrix, 33);
+
+    // BUY BUTTONS -> OPEN MODAL (placeholder for M-Pesa STK push)
+    const modal = document.getElementById('payModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalMeta = document.getElementById('modalMeta');
+    const confirmBtn = document.getElementById('confirmPay');
+    const cancelBtn = document.getElementById('cancelPay');
+    let currentOrder = null;
+
+    document.querySelectorAll('.buy').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const card = e.target.closest('.card');
+        const amount = card.dataset.amount;
+        const label = card.dataset.label;
+        const plan = card.dataset.plan;
+        currentOrder = { plan, amount, label };
+        modalTitle.textContent = `Pay Ksh ${amount}`;
+        modalMeta.textContent = label;
+        modal.style.display = 'flex';
+      });
+    });
+
+    cancelBtn.addEventListener('click', () => { modal.style.display = 'none'; currentOrder = null; });
+    modal.addEventListener('click', (e)=>{ if(e.target===modal){ modal.style.display='none'; currentOrder=null; }});
+
+    confirmBtn.addEventListener('click', () => {
+      const phone = document.getElementById('mpesaPhone').value.trim();
+      const mac = document.getElementById('deviceMac').value.trim();
+      if(!phone || !/^0\d{9}$/.test(phone)) { alert('Enter a valid M‑Pesa phone like 07XX XXX XXX'); return; }
+      if(mac && !/^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$/.test(mac)) { alert('MAC must be like AA:BB:CC:DD:EE:FF'); return; }
+
+      // Placeholder: Here you will call your backend to trigger an M‑Pesa STK Push and then, on success, open access.
+      // Example POST to your server (pseudo):
+      // fetch('/api/pay', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ phone, mac, ...currentOrder }) })
+      //   .then(r=>r.json()).then(res=>{ /* handle success */ })
+      //   .catch(console.error);
+
+      alert(`Payment request sent for ${currentOrder.label} (Ksh ${currentOrder.amount}).\nPhone: ${phone}\nMAC: ${mac || 'Not provided'}`);
+      modal.style.display = 'none';
+    });
+  </script>
 </body>
 </html>
+
